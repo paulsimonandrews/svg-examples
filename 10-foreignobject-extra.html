@@ -1,0 +1,57 @@
+<html>
+<script>
+  window.onload = function() {
+    const mySvg = document.getElementById("mySvg")
+    const myEditor = document.getElementById("myEditor")
+    const myGroup = document.getElementById("myGroup")
+    const myRectangle = document.getElementById("myRectangle")
+    const myForeignObject = document.getElementById("myForeignObject")
+
+    const resize = evt => {
+      const box = myEditor.getBoundingClientRect()
+      myForeignObject.setAttributeNS(null, 'width', box.width.toString())
+      myForeignObject.setAttributeNS(null, 'height', box.height.toString())
+      myRectangle.setAttributeNS(null, 'width', box.width.toString())
+      myRectangle.setAttributeNS(null, 'height', box.height.toString())
+    }
+
+    resize()
+    myEditor.addEventListener('input', resize)
+
+    let startX = 0
+    let startY = 0
+
+    const mouseMoveFn = event => {
+      const deltaX = event.clientX - startX
+      const deltaY = event.clientY - startY
+
+      const currentTransform = myGroup.transform.baseVal.getItem(0)
+      currentTransform.matrix.e += deltaX
+      currentTransform.matrix.f += deltaY
+
+      startX = event.clientX
+      startY = event.clientY
+    }
+
+    myGroup.addEventListener('mousedown', event => {
+      startX = event.clientX
+      startY = event.clientY
+      mySvg.addEventListener('mousemove', mouseMoveFn)
+    })
+
+    myGroup.addEventListener('mouseup', event => {
+      mySvg.removeEventListener('mousemove', mouseMoveFn)
+    })
+  }
+</script>
+<body>
+  <svg id="mySvg" width="1000" height="800" style="border:1px solid black">
+    <g id="myGroup" transform="translate(100,100)">
+      <rect id="myRectangle" width="100" height="100" stroke="black" fill="white" stroke-width="2"/>
+      <foreignObject id="myForeignObject" width="100" height="100">
+        <div id="myEditor" class="editor" contenteditable="true" style="padding:5px; white-space:nowrap; float:left; user-select:none">Enter your text here</div>
+      </foreignObject>
+    </g>
+  </svg>
+</body>
+</html>

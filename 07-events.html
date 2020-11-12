@@ -1,0 +1,42 @@
+<html>
+<script>
+  window.onload = function() {
+    const mySvg = document.getElementById("mySvg")
+    const myRectangle = document.getElementById("myRectangle")
+    let startX = 0
+    let startY = 0
+
+    const mouseMoveFn = event => {
+      const deltaX = event.clientX - startX
+      const deltaY = event.clientY - startY
+      const newX = parseInt(myRectangle.getAttributeNS(null, 'x')) + deltaX
+      const newY = parseInt(myRectangle.getAttributeNS(null, 'y')) + deltaY
+
+      myRectangle.setAttributeNS(null, 'x', newX.toString())
+      myRectangle.setAttributeNS(null, 'y', newY.toString())
+
+      startX = event.clientX
+      startY = event.clientY
+
+      console.log('Mouse Move: Delta =', deltaX, deltaY)
+    }
+
+    myRectangle.addEventListener('mousedown', event => {
+      console.log('Mouse Down')
+      startX = event.clientX
+      startY = event.clientY
+      mySvg.addEventListener('mousemove', mouseMoveFn)
+    })
+
+    myRectangle.addEventListener('mouseup', event => {
+      console.log('Mouse Up')
+      mySvg.removeEventListener('mousemove', mouseMoveFn)
+    })
+  }
+</script>
+<body>
+  <svg id="mySvg" width="1000" height="800" style="border:1px solid black">
+    <rect id="myRectangle" x="10" y="10" width="100" height="100" stroke="black" fill="green" stroke-width="2"/>
+  </svg>
+</body>
+</html>

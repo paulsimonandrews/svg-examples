@@ -1,0 +1,51 @@
+<html>
+<script>
+  window.onload = function() {
+    const svgNamespace = 'http://www.w3.org/2000/svg'
+    const mySvg = document.createElementNS(svgNamespace, 'svg')
+    mySvg.setAttributeNS(null, 'width', '1000')
+    mySvg.setAttributeNS(null, 'height', '800')
+    mySvg.style = 'border:1px solid black'
+    mySvg.id = 'my-svg'
+
+    const myCircle = document.createElementNS(svgNamespace, 'circle')
+    myCircle.setAttributeNS(null, 'cx', '300')
+    myCircle.setAttributeNS(null, 'cy', '200')
+    myCircle.setAttributeNS(null, 'r', '100')
+    myCircle.style = 'stroke:black; stroke-width:2; fill:red'
+    myCircle.id = 'my-circle'
+
+    const myGroup = document.createElementNS(svgNamespace, 'g')
+    myGroup.setAttributeNS(null, 'transform', 'translate(600,400), rotate(45)')
+    myGroup.id = 'my-group'
+
+    const myRectangle = document.createElementNS(svgNamespace, 'rect')
+    myRectangle.setAttributeNS(null, 'width', '200')
+    myRectangle.setAttributeNS(null, 'height', '150')
+    myRectangle.style = 'stroke:black; stroke-width:2; fill:yellow'
+    myRectangle.id = 'my-rectangle'
+
+    const myText = document.createElementNS(svgNamespace, 'text')
+    myText.setAttributeNS(null, 'transform', 'translate(50,50)')
+    myText.appendChild(document.createTextNode('This is a test'))
+    myText.id = 'my-text'
+
+    myGroup.appendChild(myRectangle)
+    myGroup.appendChild(myText)
+
+    mySvg.appendChild(myCircle)
+    mySvg.appendChild(myGroup)
+    document.body.appendChild(mySvg)
+
+    mySvg.addEventListener('click', event => {
+      console.log(`mySvg: Clicked on ${event.target.id}`)
+    })
+
+    myGroup.addEventListener('click', event => {
+      console.log(`myGroup: Clicked on ${event.target.id}`)
+    })
+  }
+</script>
+<body>
+</body>
+</html>

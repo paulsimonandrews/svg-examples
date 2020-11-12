@@ -1,0 +1,144 @@
+<html>
+<head>
+<style>
+  .connectorEnd {
+    opacity: 0;
+  }
+
+  .connectorEnd:hover {
+    opacity: 0.5;
+  }
+</style>
+<script>
+  window.onload = function() {
+    function createRectangle(x, y, width, height, colour, svg) {
+      const rectangle = document.createElementNS('http://www.w3.org/2000/svg', 'rect')
+      rectangle.setAttributeNS(null, 'width', width)
+      rectangle.setAttributeNS(null, 'height', height)
+      rectangle.setAttributeNS(null, 'transform', `translate(${x},${y})`)
+      rectangle.style = `stroke:black; stroke-width:2; fill:${colour}`
+
+      const mouseMoveFn = event => {
+        const deltaX = event.clientX - rectangle.startX
+        const deltaY = event.clientY - rectangle.startY
+
+        const currentTransform = rectangle.transform.baseVal.getItem(0)
+        currentTransform.matrix.e += deltaX
+        currentTransform.matrix.f += deltaY
+
+        rectangle.connectionEnd?.updateTranslate(deltaX, deltaY)
+
+        rectangle.startX = event.clientX
+        rectangle.startY = event.clientY
+      }
+
+      rectangle.addEventListener('mousedown', event => {
+        rectangle.startX = event.clientX
+        rectangle.startY = event.clientY
+        svg.addEventListener('mousemove', mouseMoveFn)
+      })
+
+      rectangle.addEventListener('mouseup', event => {
+        svg.removeEventListener('mousemove', mouseMoveFn)
+      })
+
+      return rectangle
+    }
+
+    function createEnd(x, y, radius, colour, svg, connector) {
+      const circle = document.createElementNS('http://www.w3.org/2000/svg', 'circle')
+      circle.setAttributeNS(null, 'r', radius)
+      circle.setAttributeNS(null, 'transform', `translate(${x},${y})`)
+      circle.style = `stroke:black; stroke-width:2; fill:${colour}`
+      circle.connector = connector
+
+      circle.updateTranslate = (deltaX, deltaY) => {
+        const currentTransform = circle.transform.baseVal.getItem(0)
+        currentTransform.matrix.e += deltaX
+        currentTransform.matrix.f += deltaY
+        circle.connector.update()
+      }
+
+      circle.mouseMoveFn = event => {
+        const deltaX = event.clientX - circle.startX
+        const deltaY = event.clientY - circle.startY
+
+        circle.updateTranslate(deltaX, deltaY)
+
+        circle.startX = event.clientX
+        circle.startY = event.clientY
+      }
+
+      circle.addEventListener('mousedown', event => {
+        circle.startX = event.clientX
+        circle.startY = event.clientY
+        svg.addEventListener('mousemove', circle.mouseMoveFn)
+      })
+
+      circle.addEventListener('mouseup', event => {
+        for (elem of document.elementsFromPoint(event.clientX, event.clientY)) {
+          if (elem.tagName === 'rect') {
+            elem.connectionEnd = circle
+          }
+        }
+
+        svg.removeEventListener('mousemove', circle.mouseMoveFn)
+      })
+
+      return circle
+    }
+
+    function createConnector(x1, y1, x2, y2, svg) {
+      const connector = document.createElementNS('http://www.w3.org/2000/svg', 'g')
+
+      const line = document.createElementNS('http://www.w3.org/2000/svg', 'line')
+      line.setAttributeNS(null, 'x1', x1)
+      line.setAttributeNS(null, 'y1', y1)
+      line.setAttributeNS(null, 'x2', x2)
+      line.setAttributeNS(null, 'y2', y2)
+      line.style = 'stroke:black; stroke-width:2'
+
+      const end1 = createEnd(x1, y1, '10', 'yellow', svg, connector)
+      const end2 = createEnd(x2, y2, '10', 'yellow', svg, connector)
+      end1.classList.add('connectorEnd')
+      end2.classList.add('connectorEnd')
+      connector.end1 = end1
+      connector.end2 = end2
+
+      connector.update = () => {
+        const end1Transform = connector.end1.transform.baseVal.getItem(0)
+        const end2Transform = connector.end2.transform.baseVal.getItem(0)
+
+        line.setAttributeNS(null, 'x1', end1Transform.matrix.e)
+        line.setAttributeNS(null, 'y1', end1Transform.matrix.f)
+        line.setAttributeNS(null, 'x2', end2Transform.matrix.e)
+        line.setAttributeNS(null, 'y2', end2Transform.matrix.f)
+      }
+
+      connector.addEventListener('mousemove', event => {
+        connector.update()
+      })
+
+      connector.appendChild(line)
+      connector.appendChild(end1)
+      connector.appendChild(end2)
+
+      return connector
+    }
+
+    const mySvg = document.createElementNS('http://www.w3.org/2000/svg', 'svg')
+    mySvg.setAttributeNS(null, 'width', '1000')
+    mySvg.setAttributeNS(null, 'height', '800')
+    mySvg.style = 'border:1px solid black'
+
+    mySvg.appendChild(createRectangle('100', '100', '100', '100', 'red', mySvg))
+    mySvg.appendChild(createRectangle('400', '400', '100', '100', 'green', mySvg))
+    mySvg.appendChild(createConnector('100', '600', '300', '700', mySvg))
+
+    document.body.appendChild(mySvg)
+  }
+</script>
+</head>
+<body>
+</body>
+</html>

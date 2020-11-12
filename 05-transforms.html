@@ -1,0 +1,31 @@
+<html>
+<style>
+  .example {
+    transform: translate(100px, 500px) rotate(45deg);
+  }
+</style>
+<body>
+  <svg width="1000" height="800" style="border:1px solid black">
+    <rect x="0" y="0" width="200" height="100" stroke="black" fill="red"
+          stroke-width="5" transform="translate(50,50)"/>
+
+    <rect x="0" y="0" width="200" height="100" stroke="black" fill="yellow"
+          stroke-width="5" transform="translate(500,500) scale(1.5)"/>
+
+    <rect x="0" y="0" width="200" height="100" stroke="black" fill="cyan"
+          stroke-width="5" transform="translate(650,50) skewX(20)"/>
+
+    <rect x="0" y="0" width="200" height="100" stroke="black" fill="magenta"
+          stroke-width="5" transform="translate(650,200) skewY(20)"/>
+
+    <rect x="0" y="0" width="200" height="100" stroke="black" fill="green"
+          stroke-width="5" transform="translate(350,100) rotate(45)"/>
+
+    <rect x="0" y="0" width="200" height="100" stroke="black" fill="blue"
+          stroke-width="5" transform="rotate(45) translate(350, 100)"/>
+
+    <rect x="0" y="0" width="200" height="100" stroke="black" fill="orange"
+          stroke-width="5" class="example"/>
+  </svg>
+</body>
+</html>
